@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alex Moreau — Développeur & Designer</title>
+  <meta name="description" content="Portfolio de Alex Moreau, développeur créatif et designer UI/UX basé à Paris." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Fond animé -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- NAV -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="#" class="nav-logo">AM<span class="dot">.</span></a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+        <span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about" class="nav-link">À propos</a></li>
+        <li><a href="#work" class="nav-link">Projets</a></li>
+        <li><a href="#skills" class="nav-link">Compétences</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ══ HERO ══ -->
+    <section class="hero" id="home">
+      <div class="container hero-inner">
+        <div class="hero-badge reveal">
+          <span class="badge-dot"></span>
+          Disponible pour des missions
+        </div>
+        <h1 class="hero-title reveal">
+          Je crée des<br>
+          <span class="gradient-text">expériences</span><br>
+          digitales.
+        </h1>
+        <p class="hero-desc reveal">
+          Développeur fullstack & designer UI/UX.<br>
+          Je transforme vos idées en interfaces mémorables.
+        </p>
+        <div class="hero-actions reveal">
+          <a href="#work" class="btn btn-primary">Voir mes projets</a>
+          <a href="#contact" class="btn btn-ghost">Me contacter →</a>
+        </div>
+        <div class="hero-scroll reveal">
+          <span>Défiler</span>
+          <div class="scroll-line"></div>
+        </div>
+      </div>
+      <div class="hero-number">01</div>
+    </section>
+
+    <!-- ══ ABOUT ══ -->
+    <section class="about section" id="about">
+      <div class="container about-grid">
+        <div class="about-left reveal">
+          <p class="section-label">À propos</p>
+          <h2 class="section-title">Passionné par<br>le pixel parfait.</h2>
+        </div>
+        <div class="about-right reveal">
+          <p class="about-text">
+            Avec plus de <strong>5 ans d'expérience</strong>, je conçois et développe des
+            produits numériques qui allient esthétique soignée et performance technique.
+            Mon approche : comprendre le fond avant de dessiner la forme.
+          </p>
+          <p class="about-text">
+            J'ai collaboré avec des startups, des agences et des entreprises du CAC 40 —
+            toujours avec la même exigence.
+          </p>
+          <div class="about-stats">
+            <div class="stat">
+              <span class="stat-number">48+</span>
+              <span class="stat-label">Projets livrés</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">5 ans</span>
+              <span class="stat-label">D'expérience</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Clients satisfaits</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PROJETS ══ -->
+    <section class="work section" id="work">
+      <div class="container">
+        <div class="section-header reveal">
+          <p class="section-label">Projets sélectionnés</p>
+          <h2 class="section-title">Ce que j'ai construit.</h2>
+        </div>
+        <div class="projects-grid">
+
+          <article class="project-card reveal" style="--delay:0s">
+            <div class="project-visual pv-1">
+              <div class="project-mockup">
+                <div class="mockup-bar"><span></span><span></span><span></span></div>
+                <div class="mockup-content">
+                  <div class="mockup-line w80"></div>
+                  <div class="mockup-line w60"></div>
+                  <div class="mockup-block"></div>
+                  <div class="mockup-line w40"></div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-tag">Web App</span>
+                <span class="project-year">2025</span>
+              </div>
+              <h3 class="project-title">Dashboard Analytics</h3>
+              <p class="project-desc">Interface de visualisation de données en temps réel pour une fintech parisienne.</p>
+              <a href="#" class="project-link">Voir le projet <span>↗</span></a>
+            </div>
+          </article>
+
+          <article class="project-card reveal" style="--delay:0.15s">
+            <div class="project-visual pv-2">
+              <div class="project-mockup">
+                <div class="mockup-bar"><span></span><span></span><span></span></div>
+                <div class="mockup-content">
+                  <div class="mockup-grid">
+                    <div class="mockup-cell"></div>
+                    <div class="mockup-cell"></div>
+                    <div class="mockup-cell tall"></div>
+                    <div class="mockup-cell"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-tag">E-commerce</span>
+                <span class="project-year">2024</span>
+              </div>
+              <h3 class="project-title">Studio Boutique</h3>
+              <p class="project-desc">Boutique en ligne pour une marque de mode indépendante avec CMS sur-mesure.</p>
+              <a href="#" class="project-link">Voir le projet <span>↗</span></a>
+            </div>
+          </article>
+
+          <article class="project-card reveal" style="--delay:0.3s">
+            <div class="project-visual pv-3">
+              <div class="project-mockup">
+                <div class="mockup-bar"><span></span><span></span><span></span></div>
+                <div class="mockup-content">
+                  <div class="mockup-circle-big"></div>
+                  <div class="mockup-line w70"></div>
+                  <div class="mockup-line w50"></div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-tag">Application mobile</span>
+                <span class="project-year">2024</span>
+              </div>
+              <h3 class="project-title">Pulse Health</h3>
+              <p class="project-desc">App de suivi de santé personnalisée, de la conception UX au code React Native.</p>
+              <a href="#" class="project-link">Voir le projet <span>↗</span></a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SKILLS ══ -->
+    <section class="skills section" id="skills">
+      <div class="container">
+        <div class="section-header reveal">
+          <p class="section-label">Compétences</p>
+          <h2 class="section-title">Ma boîte à outils.</h2>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-group reveal">
+            <h3 class="skill-group-title">Frontend</h3>
+            <ul class="skill-list">
+              <li class="skill-item"><span>React / Next.js</span><div class="skill-bar"><div class="skill-fill" data-width="92"></div></div></li>
+              <li class="skill-item"><span>TypeScript</span><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></li>
+              <li class="skill-item"><span>CSS / Tailwind</span><div class="skill-bar"><div class="skill-fill" data-width="95"></div></div></li>
+              <li class="skill-item"><span>Three.js / GSAP</span><div class="skill-bar"><div class="skill-fill" data-width="70"></div></div></li>
+            </ul>
+          </div>
+          <div class="skill-group reveal" style="--delay:0.1s">
+            <h3 class="skill-group-title">Backend</h3>
+            <ul class="skill-list">
+              <li class="skill-item"><span>Node.js / Express</span><div class="skill-bar"><div class="skill-fill" data-width="88"></div></div></li>
+              <li class="skill-item"><span>Python / FastAPI</span><div class="skill-bar"><div class="skill-fill" data-width="75"></div></div></li>
+              <li class="skill-item"><span>PostgreSQL</span><div class="skill-bar"><div class="skill-fill" data-width="80"></div></div></li>
+              <li class="skill-item"><span>Docker / CI-CD</span><div class="skill-bar"><div class="skill-fill" data-width="72"></div></div></li>
+            </ul>
+          </div>
+          <div class="skill-group reveal" style="--delay:0.2s">
+            <h3 class="skill-group-title">Design</h3>
+            <ul class="skill-list">
+              <li class="skill-item"><span>Figma</span><div class="skill-bar"><div class="skill-fill" data-width="90"></div></div></li>
+              <li class="skill-item"><span>Design System</span><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></li>
+              <li class="skill-item"><span>Motion Design</span><div class="skill-bar"><div class="skill-fill" data-width="68"></div></div></li>
+              <li class="skill-item"><span>UX Research</span><div class="skill-bar"><div class="skill-fill" data-width="78"></div></div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CONTACT ══ -->
+    <section class="contact section" id="contact">
+      <div class="container contact-inner reveal">
+        <p class="section-label">Contact</p>
+        <h2 class="contact-title">Travaillons<br><span class="gradient-text">ensemble.</span></h2>
+        <p class="contact-sub">Un projet en tête ? Discutons-en autour d'un café virtuel.</p>
+        <a href="mailto:alex@moreau.dev" class="btn btn-primary btn-lg">
+          alex@moreau.dev
+        </a>
+        <div class="contact-socials">
+          <a href="#" class="social-link">GitHub</a>
+          <a href="#" class="social-link">LinkedIn</a>
+          <a href="#" class="social-link">Dribbble</a>
+          <a href="#" class="social-link">Twitter</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="nav-logo">AM<span class="dot">.</span></span>
+      <p class="footer-copy">© 2026 Alex Moreau — Fait avec ☕ à Paris</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
