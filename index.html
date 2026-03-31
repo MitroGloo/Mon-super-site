@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maison Éclat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Spacing+Mono&family=DM+Sans:wght@200;300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0d0d0c;
+      --cream: #f5f0e8;
+      --gold: #b89c5e;
+      --muted: #9a9082;
+      --soft: #e8e1d4;
+    }
+
+    *, *::before, *::after {
+      margin: 0; padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 200;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Curseur personnalisé */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+      mix-blend-mode: multiply;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.25s ease, width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+      opacity: 0.6;
+    }
+    body:hover .cursor { opacity: 1; }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2rem 4rem;
+      z-index: 50;
+      mix-blend-mode: multiply;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .nav-links {
+      display: flex; gap: 3rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; left: 0; bottom: -3px;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.4s ease;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 12rem 4rem 6rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4rem, 7vw, 8rem);
+      font-weight: 300;
+      line-height: 0.95;
+      color: var(--ink);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 340px;
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.7s forwards;
+    }
+
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 1.2rem;
+      text-decoration: none;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0;
+      animation: fadeUp 1s ease 0.9s forwards;
+      transition: gap 0.4s ease;
+    }
+    .hero-cta:hover { gap: 2rem; }
+    .hero-cta-line {
+      width: 40px; height: 1px;
+      background: var(--gold);
+      transition: width 0.4s ease;
+    }
+    .hero-cta:hover .hero-cta-line { width: 60px; }
+
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-img-wrap {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      animation: fadeIn 1.4s ease 0.2s forwards;
+    }
+    .hero-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--cream) 0%, transparent 30%);
+    }
+
+    /* Image de remplacement — dégradé artistique */
+    .hero-placeholder {
+      width: 100%; height: 100%;
+      background:
+        radial-gradient(ellipse at 70% 40%, #d4c5a0 0%, transparent 55%),
+        radial-gradient(ellipse at 30% 80%, #c4b48e 0%, transparent 45%),
+        linear-gradient(135deg, #e8dfc8 0%, #c8b898 50%, #b8a880 100%);
+      position: relative;
+    }
+    .hero-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 60px,
+          rgba(255,255,255,0.03) 60px,
+          rgba(255,255,255,0.03) 61px
+        );
+    }
+
+    .hero-number {
+      position: absolute;
+      right: 3rem; bottom: 4rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10rem;
+      font-weight: 300;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(184,156,94,0.2);
+      line-height: 1;
+      z-index: 3;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      padding: 5rem 4rem;
+      display: flex; align-items: center; gap: 3rem;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--soft); }
+    .divider-text {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ── GRID SECTION ── */
+    .grid-section {
+      padding: 2rem 4rem 8rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      cursor: none;
+    }
+
+    .card-bg {
+      width: 100%; height: 100%;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .card:hover .card-bg { transform: scale(1.05); }
+
+    .card:nth-child(1) .card-bg { background: linear-gradient(160deg, #c8b898, #9a8a6a); }
+    .card:nth-child(2) .card-bg { background: linear-gradient(200deg, #8a7a5a, #d4c8a8); }
+    .card:nth-child(3) .card-bg { background: linear-gradient(140deg, #b0a080, #c8b890); }
+
+    .card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(13,13,12,0.7) 0%, transparent 60%);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 2.5rem;
+      transform: translateY(20px);
+      transition: transform 0.5s ease;
+    }
+    .card:hover .card-overlay { transform: translateY(0); }
+
+    .card-tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+    }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.2;
+    }
+
+    /* ── QUOTE ── */
+    .quote-section {
+      padding: 8rem 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+    .quote-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 8rem;
+      color: var(--gold);
+      opacity: 0.15;
+      line-height: 0.5;
+      margin-bottom: 2rem;
+    }
+    .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--ink);
+      max-width: 700px;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+    .quote-author {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--soft);
+      padding: 3rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+    }
+    .footer-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.5rem 2rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 10rem 2rem 4rem; }
+      .hero-right { display: none; }
+      .grid-section { grid-template-columns: 1fr; padding: 2rem 2rem 6rem; }
+      .divider, .quote-section, footer { padding-left: 2rem; padding-right: 2rem; }
+      footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Maison Éclat</div>
+    <ul class="nav-links">
+      <li><a href="#">Collection</a></li>
+      <li><a href="#">Atelier</a></li>
+      <li><a href="#">Histoire</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <p class="hero-eyebrow">Collection Automne — 2026</p>
+      <h1 class="hero-title">L'art de<br><em>l'essentiel</em></h1>
+      <p class="hero-sub">
+        Chaque pièce naît d'un dialogue silencieux entre la matière et la lumière.
+        Une esthétique du dépouillement, une présence absolue.
+      </p>
+      <a href="#" class="hero-cta">
+        <span class="hero-cta-line"></span>
+        Découvrir
+      </a>
+    </div>
+    <div class="hero-right">
+      <div class="hero-img-wrap">
+        <div class="hero-placeholder"></div>
+      </div>
+      <span class="hero-number">01</span>
+    </div>
+  </section>
+
+  <!-- DIVIDER -->
+  <div class="divider reveal">
+    <div class="divider-line"></div>
+    <span class="divider-text">Savoir-faire depuis 1923</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- GRID -->
+  <section class="grid-section">
+    <div class="card reveal">
+      <div class="card-bg"></div>
+      <div class="card-overlay">
+        <span class="card-tag">Cuir</span>
+        <h3 class="card-title">Silence<br>Nocturne</h3>
+      </div>
+    </div>
+    <div class="card reveal" style="transition-delay:0.15s; margin-top: 4rem;">
+      <div class="card-bg"></div>
+      <div class="card-overlay">
+        <span class="card-tag">Lin & Soie</span>
+        <h3 class="card-title">Lumière<br>d'Aube</h3>
+      </div>
+    </div>
+    <div class="card reveal" style="transition-delay:0.3s;">
+      <div class="card-bg"></div>
+      <div class="card-overlay">
+        <span class="card-tag">Cachemire</span>
+        <h3 class="card-title">Douce<br>Pesanteur</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <section class="quote-section reveal">
+    <div class="quote-mark">"</div>
+    <p class="quote-text">
+      La beauté n'est pas dans la chose elle-même,<br>
+      elle est dans l'espace entre la chose et nous.
+    </p>
+    <span class="quote-author">— Roland Barthes</span>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="reveal">
+    <div class="footer-logo">Maison Éclat</div>
+    <p class="footer-copy">© 2026 — Tous droits réservés</p>
+    <ul class="footer-links">
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">Presse</a></li>
+      <li><a href="#">Mentions</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    // Curseur custom
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+    });
+
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, .card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px';
+        cursor.style.height = '20px';
+        ring.style.width = '60px';
+        ring.style.height = '60px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '10px';
+        cursor.style.height = '10px';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+      });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
