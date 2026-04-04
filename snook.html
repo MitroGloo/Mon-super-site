@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tables de Snook et Ciriello — Arthur Le Boursicot</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Styles spécifiques partagés avec l'outil NIOSH */
+    .snook-container { padding: 40px 0; }
+    .form-box { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+    .form-box h3 { border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; margin-bottom: 20px; font-size: 1.3rem; }
+    
+    .input-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .input-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border-color); color: var(--primary-blue); font-size: 0.9rem; }
+    .input-table td { padding: 15px 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    .input-table tr:hover { background-color: #fcfdfe; }
+    
+    .param-info { font-size: 0.85rem; font-weight: bold; color: var(--text-dark); display: block; }
+    .param-desc { font-size: 0.75rem; color: var(--text-gray); font-weight: normal; }
+    
+    .field input, .field select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.95rem; }
+    .field input:focus, .field select:focus { border-color: var(--primary-blue); outline: none; box-shadow: 0 0 0 2px var(--light-blue); }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .result-chip { background: var(--bg-light); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--light-blue); }
+    .result-val { font-size: 2.2rem; font-weight: bold; color: var(--primary-blue); margin: 5px 0; }
+    .verdict-box { padding: 15px; text-align: center; border-radius: 8px; border: 2px solid var(--border-color); margin-top: 10px; font-weight: bold; }
+    
+    .hidden { display: none !important; }
+
+    @media (max-width: 768px) {
+      .input-table, .input-table tr, .input-table td, .input-table th { display: block; width: 100%; }
+      .input-table th { display: none; }
+      .input-table td { border-bottom: none; padding: 10px 5px; }
+      .input-table tr { border-bottom: 2px solid var(--bg-light); padding: 15px 0; }
+      .input-table td::before { content: attr(data-label); font-weight: bold; color: var(--primary-blue); display: block; margin-bottom: 5px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">ALB<span>.</span></a>
+      <a href="index.html" class="nav-link">← Retour aux outils</a>
+    </nav>
+  </header>
+
+  <main class="container snook-container">
+    <h1 class="hero-title">Tables de Snook et Ciriello</h1>
+    <p>Évaluation psychophysique pour déterminer les charges et forces maximales acceptables (Levage, Abaissement, Poussée, Traction, Transport).</p>
+
+    <div class="form-box">
+      <h3>1. Configuration de l'analyse</h3>
+      <table class="input-table">
+        <tbody>
+          <tr>
+            <td style="width: 50%;">
+              <span class="param-info">Type de tâche</span>
+              <span class="param-desc">Sélectionnez l'action de manutention</span>
+            </td>
+            <td class="field">
+              <select id="task_type" onchange="updateUI()">
+                <option value="lift">Soulever (Levage)</option>
+                <option value="lower">Abaisser</option>
+                <option value="push">Pousser</option>
+                <option value="pull">Tirer (Traction)</option>
+                <option value="carry">Transporter</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Genre de la population cible</span>
+            </td>
+            <td class="field">
+              <select id="gender" onchange="calc()">
+                <option value="M">Hommes</option>
+                <option value="F">Femmes</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Pourcentage de la population capable</span>
+              <span class="param-desc">Objectif d'acceptabilité (généralement 75% ou 90%)</span>
+            </td>
+            <td class="field">
+              <select id="percentile" onchange="calc()">
+                <option value="90">90% (Conception la plus sûre)</option>
+                <option value="75" selected>75% (Recommandation standard)</option>
+                <option value="50">50%</option>
+                <option value="25">25%</option>
+                <option value="10">10% (Réservé aux plus forts)</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-box">
+      <h3>2. Paramètres de la tâche</h3>
+      <table class="input-table">
+        <tbody>
+          <tr class="param-lift">
+            <td style="width: 50%;">
+              <span class="param-info">Largeur de l'objet</span>
+              <span class="param-desc">Distance depuis le corps (cm)</span>
+            </td>
+            <td class="field"><input type="number" id="width" placeholder="ex: 34" oninput="calc()"></td>
+          </tr>
+          <tr class="param-lift">
+            <td>
+              <span class="param-info">Zone de manutention</span>
+            </td>
+            <td class="field">
+              <select id="zone" onchange="calc()">
+                <option value="floor_knuckle">Sol aux articulations (Knuckle)</option>
+                <option value="knuckle_shoulder">Articulations aux épaules</option>
+                <option value="shoulder_reach">Épaules à portée de bras</option>
+              </select>
+            </td>
+          </tr>
+          
+          <tr class="param-push hidden">
+            <td style="width: 50%;">
+              <span class="param-info">Hauteur des mains</span>
+              <span class="param-desc">Hauteur d'application de la force ou prise (cm)</span>
+            </td>
+            <td class="field"><input type="number" id="height" placeholder="ex: 95" oninput="calc()"></td>
+          </tr>
+          <tr class="param-push hidden">
+            <td>
+              <span class="param-info">Distance de déplacement</span>
+              <span class="param-desc">Distance du chariot ou de la marche (m)</span>
+            </td>
+            <td class="field">
+              <select id="distance" onchange="calc()">
+                <option value="2.1">2.1 m</option>
+                <option value="7.6">7.6 m</option>
+                <option value="15.2">15.2 m</option>
+                <option value="30.5">30.5 m</option>
+              </select>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="width: 50%;">
+              <span class="param-info">Fréquence (Répétition)</span>
+              <span class="param-desc">Rythme de la tâche</span>
+            </td>
+            <td class="field">
+              <select id="frequency" onchange="calc()">
+                <option value="1_per_5_min">1 fois toutes les 5 minutes (ou moins)</option>
+                <option value="1_per_min">1 fois par minute</option>
+                <option value="4_per_min">4 fois par minute</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-box">
+      <h3>3. Valeurs maximales acceptables</h3>
+      
+      <div id="res-weight" class="grid-3">
+        <div class="result-chip" style="grid-column: 1 / -1;">
+          Limite de Poids Recommandée
+          <div class="result-val" id="val-weight">—</div>
+          kg
+        </div>
+      </div>
+
+      <div id="res-force" class="grid-3 hidden">
+        <div class="result-chip">
+          Force Initiale (Mise en mouvement)
+          <div class="result-val" id="val-force-initial">—</div>
+          kg
+        </div>
+        <div class="result-chip">
+          Force de Maintien (Soutenue)
+          <div class="result-val" id="val-force-sustained">—</div>
+          kg
+        </div>
+      </div>
+
+      <div class="verdict-box" id="verdict">Veuillez renseigner les paramètres pour afficher la recommandation.</div>
+      
+      <p style="font-size: 0.8rem; color: var(--text-gray); margin-top: 15px; text-align: center;">
+        * Note : Si la tâche implique des manipulations sans poignées adaptées, ou avec des genoux fléchis, des réductions de 15% à 50% peuvent s'appliquer selon les directives de Snook.
+      </p>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <button class="btn btn-primary" onclick="window.print()">Imprimer le rapport PDF</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // 1. GESTION DE L'AFFICHAGE DYNAMIQUE DE L'INTERFACE
+    function updateUI() {
+      const task = document.getElementById('task_type').value;
+      
+      // Récupérer les lignes du tableau
+      const liftFields = document.querySelectorAll('.param-lift');
+      const pushFields = document.querySelectorAll('.param-push');
+      
+      // Récupérer les blocs de résultats
+      const resWeight = document.getElementById('res-weight');
+      const resForce = document.getElementById('res-force');
+
+      // Réinitialiser
+      liftFields.forEach(el => el.classList.add('hidden'));
+      pushFields.forEach(el => el.classList.add('hidden'));
+      resWeight.classList.add('hidden');
+      resForce.classList.add('hidden');
+
+      if(task === 'lift' || task === 'lower') {
+        liftFields.forEach(el => el.classList.remove('hidden'));
+        resWeight.classList.remove('hidden');
+      } 
+      else if(task === 'push' || task === 'pull') {
+        pushFields.forEach(el => el.classList.remove('hidden'));
+        resForce.classList.remove('hidden');
+      }
+      else if(task === 'carry') {
+        // Carry nécessite la hauteur et la distance, et affiche un poids
+        pushFields.forEach(el => el.classList.remove('hidden'));
+        resWeight.classList.remove('hidden');
+      }
+      calc();
+    }
+
+    // 2. SIMULATION DE LA BASE DE DONNÉES SNOOK (Extrait)
+    // Pour que l'outil soit 100% opérationnel, un développeur devra insérer
+    // les données des tableaux PDF au format JSON ici.
+    function mockSnookLookup(task, gender, percentile) {
+        // Voici des valeurs d'exemple tirées des tableaux pour démontrer l'interaction
+        // (Levage, Homme/Femme, Sol-Articulations, largeur standard, 1/min)
+        if (task === 'lift' || task === 'lower' || task === 'carry') {
+            if (gender === 'M' && percentile === '75') return 21;
+            if (gender === 'M' && percentile === '90') return 16;
+            if (gender === 'F' && percentile === '75') return 14;
+            if (gender === 'F' && percentile === '90') return 11;
+            return 25; // Valeur par défaut pour le mock
+        } else {
+            // Pour Push/Pull on renvoie un tableau [Force Initiale, Force Maintien]
+            if (gender === 'M' && percentile === '75') return [26, 16];
+            if (gender === 'M' && percentile === '90') return [20, 11];
+            if (gender === 'F' && percentile === '75') return [18, 12];
+            if (gender === 'F' && percentile === '90') return [14, 9];
+            return [30, 20];
+        }
+    }
+
+    // 3. LOGIQUE DE CALCUL ET AFFICHAGE
+    function calc() {
+      const task = document.getElementById('task_type').value;
+      const gender = document.getElementById('gender').value;
+      const percentile = document.getElementById('percentile').value;
+      
+      const verdictBox = document.getElementById('verdict');
+
+      // Appel de la base de données (mock)
+      const result = mockSnookLookup(task, gender, percentile);
+
+      // Mise à jour de l'affichage selon le type de résultat
+      if (task === 'lift' || task === 'lower' || task === 'carry') {
+        document.getElementById('val-weight').textContent = result;
+        verdictBox.innerHTML = `Pour que <strong>${percentile}%</strong> des <strong>${gender === 'M' ? 'hommes' : 'femmes'}</strong> puissent réaliser cette tâche sans risque, la charge ne doit pas dépasser <span style="color:var(--primary-blue)">${result} kg</span>.`;
+      } else {
+        document.getElementById('val-force-initial').textContent = result[0];
+        document.getElementById('val-force-sustained').textContent = result[1];
+        verdictBox.innerHTML = `Pour satisfaire <strong>${percentile}%</strong> des <strong>${gender === 'M' ? 'hommes' : 'femmes'}</strong>, la force initiale ne doit pas excéder <span style="color:var(--primary-blue)">${result[0]} kg</span>, et la force de maintien <span style="color:var(--primary-blue)">${result[1]} kg</span>.`;
+      }
+      verdictBox.style.borderColor = 'var(--primary-blue)';
+    }
+
+    // Initialisation au chargement
+    updateUI();
+  </script>
+</body>
+</html>
