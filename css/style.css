@@ -30,7 +30,7 @@ p { color: var(--text-gray); margin-bottom: 15px; font-size: 1.1rem; }
 .nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
 .nav-logo { font-size: 1.5rem; font-weight: bold; text-decoration: none; color: var(--primary-blue); }
 .nav-links { list-style: none; display: flex; gap: 20px; }
-.nav-link { text-decoration: none; color: var(--text-dark); font-weight: bold; }
+.nav-link { text-decoration: none; color: var(--primary-blue); font-weight: bold; }
 .nav-link:hover { color: var(--primary-blue); }
 .nav-toggle { display: none; background: none; border: 1px solid var(--border-color); padding: 5px 10px; cursor: pointer; color: var(--primary-blue); }
 
