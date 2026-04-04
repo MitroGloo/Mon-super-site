@@ -7,28 +7,35 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .niosh-container { padding: 40px 0; }
-    .form-box { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-    .form-box h3 { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; font-size: 1.2rem; }
+    .form-box { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+    .form-box h3 { border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; margin-bottom: 20px; font-size: 1.3rem; }
     
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    /* Style du Tableau de Saisie */
+    .input-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .input-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border-color); color: var(--primary-blue); font-size: 0.9rem; }
+    .input-table td { padding: 15px 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    .input-table tr:hover { background-color: #fcfdfe; }
+    
+    .param-info { font-size: 0.85rem; font-weight: bold; color: var(--text-dark); display: block; }
+    .param-desc { font-size: 0.75rem; color: var(--text-gray); font-weight: normal; }
+    
+    .field input, .field select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.95rem; }
+    .field input:focus { border-color: var(--primary-blue); outline: none; box-shadow: 0 0 0 2px var(--light-blue); }
+
+    /* Résultats */
     .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-    
-    .field { margin-bottom: 15px; }
-    .field label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: var(--text-gray); }
-    .field input, .field select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem; }
-    .field input:focus { outline: none; border-color: var(--primary-blue); }
-    
     .result-chip { background: var(--bg-light); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--light-blue); }
     .result-val { font-size: 1.8rem; font-weight: bold; color: var(--primary-blue); margin: 5px 0; }
-    
-    .verdict-box { padding: 20px; text-align: center; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 10px;}
-    .formula { background: var(--bg-light); padding: 15px; font-family: monospace; font-size: 0.85rem; margin-top: 20px; border-radius: 4px; }
-    
-    .ref-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
-    .ref-table th, .ref-table td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
-    .ref-table th { background: var(--bg-light); color: var(--primary-blue); }
-    
-    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    .verdict-box { padding: 15px; text-align: center; border-radius: 8px; border: 2px solid var(--border-color); margin-top: 10px; font-weight: bold; }
+    .formula { background: #f8f9fa; padding: 15px; font-family: monospace; font-size: 0.8rem; border-radius: 4px; border-left: 4px solid var(--primary-blue); margin-top: 20px; }
+
+    @media (max-width: 768px) {
+      .input-table, .input-table tr, .input-table td, .input-table th { display: block; width: 100%; }
+      .input-table th { display: none; }
+      .input-table td { border-bottom: none; padding: 10px 5px; }
+      .input-table tr { border-bottom: 2px solid var(--bg-light); padding: 15px 0; }
+      .input-table td::before { content: attr(data-label); font-weight: bold; color: var(--primary-blue); display: block; margin-bottom: 5px; font-size: 0.8rem; }
+    }
   </style>
 </head>
 <body>
@@ -36,89 +43,137 @@
   <header class="header">
     <nav class="nav container">
       <a href="index.html" class="nav-logo">ALB<span>.</span></a>
-      <a href="index.html" class="nav-link">← Retour</a>
+      <a href="index.html" class="nav-link">← Retour aux outils</a>
     </nav>
   </header>
 
   <main class="container niosh-container">
-    <div class="hero-badge">Outil ergonomique · Lombalgie</div>
-    <h1 class="hero-title" style="font-size: 2.5rem;">Équation de NIOSH</h1>
-    <p>Calcul de la Charge Maximale Admissible (CMA) et de l'Indice de Levée (LI).</p>
+    <h1 class="hero-title">Équation de NIOSH</h1>
+    <p>Outil d'évaluation du risque de lombalgie lors de tâches de manutention manuelle.</p>
 
-    <div class="form-box mt-4">
-      <h3>Informations générales</h3>
-      <div class="grid-2">
-        <div class="field"><label>Tâche observée</label><input type="text" placeholder="Ex: port de sacs"></div>
-        <div class="field"><label>Genre</label><select><option>Homme</option><option>Femme</option></select></div>
-      </div>
+    <div class="form-box">
+      <h3>Saisie des paramètres</h3>
+      <table class="input-table">
+        <thead>
+          <tr>
+            <th style="width: 40%;">Paramètre</th>
+            <th style="width: 30%;">Origine (Prise)</th>
+            <th style="width: 30%;">Destination (Dépose)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="param-info">Charge manipulée (CM)</span>
+              <span class="param-desc">Poids réel de la charge en kg</span>
+            </td>
+            <td data-label="Origine" class="field"><input type="number" id="cm_o" step="0.1" oninput="calc()" placeholder="ex: 10"></td>
+            <td data-label="Destination" class="field"><input type="number" id="cm_d" step="0.1" oninput="calc()" placeholder="ex: 10"></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Distance Horizontale (H)</span>
+              <span class="param-desc">Distance entre les chevilles et les mains (cm)</span>
+            </td>
+            <td data-label="Origine" class="field"><input type="number" id="h_o" oninput="calc()" placeholder="cm"></td>
+            <td data-label="Destination" class="field"><input type="number" id="h_d" oninput="calc()" placeholder="cm"></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Hauteur des mains (V)</span>
+              <span class="param-desc">Distance entre le sol et les mains (cm)</span>
+            </td>
+            <td data-label="Origine" class="field"><input type="number" id="v_o" oninput="calc()" placeholder="cm"></td>
+            <td data-label="Destination" class="field"><input type="number" id="v_d" oninput="calc()" placeholder="cm"></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Angle d'Asymétrie (A)</span>
+              <span class="param-desc">Rotation du tronc en degrés (0 si face)</span>
+            </td>
+            <td data-label="Origine" class="field"><input type="number" id="a_o" oninput="calc()" placeholder="0°"></td>
+            <td data-label="Destination" class="field"><input type="number" id="a_d" oninput="calc()" placeholder="0°"></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Fréquence (F)</span>
+              <span class="param-desc">Nombre de levées par minute</span>
+            </td>
+            <td data-label="Origine" class="field"><input type="number" id="f_o" step="0.1" oninput="calc()" placeholder="f/min"></td>
+            <td data-label="Destination" class="field"><input type="number" id="f_d" step="0.1" oninput="calc()" placeholder="f/min"></td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Durée continue</span>
+              <span class="param-desc">Temps passé sur cette tâche</span>
+            </td>
+            <td data-label="Origine" class="field">
+              <select id="d_o" oninput="calc()">
+                <option value="">—</option>
+                <option value="1">≤ 1 h</option>
+                <option value="2">> 1 h ≤ 2 h</option>
+                <option value="8">> 2 h ≤ 8 h</option>
+              </select>
+            </td>
+            <td data-label="Destination" class="field">
+              <select id="d_d" oninput="calc()">
+                <option value="">—</option>
+                <option value="1">≤ 1 h</option>
+                <option value="2">> 1 h ≤ 2 h</option>
+                <option value="8">> 2 h ≤ 8 h</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">Qualité de Prise (I)</span>
+              <span class="param-desc">Type de poignées ou confort de prise</span>
+            </td>
+            <td data-label="Origine" class="field">
+              <select id="i_o" oninput="calc()">
+                <option value="">—</option>
+                <option value="B">Bonne (Poignées)</option>
+                <option value="A">Acceptable</option>
+                <option value="M">Mauvaise (Glissant)</option>
+              </select>
+            </td>
+            <td data-label="Destination" class="field">
+              <select id="i_d" oninput="calc()">
+                <option value="">—</option>
+                <option value="B">Bonne (Poignées)</option>
+                <option value="A">Acceptable</option>
+                <option value="M">Mauvaise (Glissant)</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="form-box">
-      <h3>Paramètres de levée (Origine & Destination)</h3>
-      <p style="font-size: 0.85rem; background: var(--bg-light); padding: 10px; border-radius: 4px;">Charge Constante FP est fixée à 23 kg. Remplissez les champs ci-dessous.</p>
-      
-      <div class="grid-2">
-        <div>
-          <h4 style="color:var(--primary-blue); margin: 15px 0;">Origine</h4>
-          <div class="field"><label>Charge manipulée CM (kg)</label><input type="number" id="cm_o" step="0.1" oninput="calc()"></div>
-          <div class="field"><label>Distance Horizontale H (cm)</label><input type="number" id="h_o" oninput="calc()"></div>
-          <div class="field"><label>Distance Verticale V (cm)</label><input type="number" id="v_o" oninput="calc()"></div>
-          <div class="field"><label>Angle Asymétrie A (°)</label><input type="number" id="a_o" oninput="calc()"></div>
-          <div class="field"><label>Fréquence F (lev./min)</label><input type="number" id="f_o" step="0.1" oninput="calc()"></div>
-          <div class="field"><label>Durée</label>
-            <select id="d_o" oninput="calc()"><option value="">—</option><option value="1">≤ 1 h</option><option value="2">> 1 h ≤ 2 h</option><option value="8">> 2 h ≤ 8 h</option></select>
-          </div>
-          <div class="field"><label>Qualité de Prise</label>
-            <select id="i_o" oninput="calc()"><option value="">—</option><option value="B">Bonne</option><option value="A">Acceptable</option><option value="M">Mauvaise</option></select>
-          </div>
-        </div>
-
-        <div>
-          <h4 style="color:var(--primary-blue); margin: 15px 0;">Destination</h4>
-          <div class="field"><label>Charge manipulée CM (kg)</label><input type="number" id="cm_d" step="0.1" oninput="calc()"></div>
-          <div class="field"><label>Distance Horizontale H (cm)</label><input type="number" id="h_d" oninput="calc()"></div>
-          <div class="field"><label>Distance Verticale V (cm)</label><input type="number" id="v_d" oninput="calc()"></div>
-          <div class="field"><label>Angle Asymétrie A (°)</label><input type="number" id="a_d" oninput="calc()"></div>
-          <div class="field"><label>Fréquence F (lev./min)</label><input type="number" id="f_d" step="0.1" oninput="calc()"></div>
-          <div class="field"><label>Durée</label>
-            <select id="d_d" oninput="calc()"><option value="">—</option><option value="1">≤ 1 h</option><option value="2">> 1 h ≤ 2 h</option><option value="8">> 2 h ≤ 8 h</option></select>
-          </div>
-          <div class="field"><label>Qualité de Prise</label>
-            <select id="i_d" oninput="calc()"><option value="">—</option><option value="B">Bonne</option><option value="A">Acceptable</option><option value="M">Mauvaise</option></select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-box">
-      <h3>Résultats</h3>
+      <h3>Résultats de l'analyse</h3>
       <div class="grid-4">
         <div class="result-chip">CMA Origine<div class="result-val" id="r_cma_o">—</div>kg</div>
         <div class="result-chip">LI Origine<div class="result-val" id="r_li_o">—</div>Indice</div>
-        <div class="result-chip">CMA Dest.<div class="result-val" id="r_cma_d">—</div>kg</div>
-        <div class="result-chip">LI Dest.<div class="result-val" id="r_li_d">—</div>Indice</div>
+        <div class="result-chip">CMA Destination<div class="result-val" id="r_cma_d">—</div>kg</div>
+        <div class="result-chip">LI Destination<div class="result-val" id="r_li_d">—</div>Indice</div>
       </div>
 
-      <div class="grid-2" style="margin-top: 15px;">
-        <div class="verdict-box" id="panel_o"><strong>Origine :</strong> <span id="verdict_o">En attente</span></div>
-        <div class="verdict-box" id="panel_d"><strong>Destination :</strong> <span id="verdict_d">En attente</span></div>
+      <div class="grid-2" style="margin-top: 20px;">
+        <div class="verdict-box" id="panel_o">Origine : <span id="verdict_o">En attente</span></div>
+        <div class="verdict-box" id="panel_d">Destination : <span id="verdict_d">En attente</span></div>
       </div>
 
-      <div class="formula" id="formula_box">En attente des données...</div>
-
-      <table class="ref-table">
-        <tr><th>LI</th><th>Interprétation</th></tr>
-        <tr><td>≤ 1</td><td>🟢 Tâche acceptable</td></tr>
-        <tr><td>1 < LI ≤ 3</td><td>🟠 Risque de lombalgie (modifier le poste)</td></tr>
-        <tr><td>> 3</td><td>🔴 Dépasse les capacités (intervention immédiate)</td></tr>
-      </table>
+      <div class="formula" id="formula_box">Remplissez les champs pour voir le détail du calcul.</div>
       
-      <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.print()">Imprimer PDF</button>
+      <div style="text-align: center; margin-top: 30px;">
+        <button class="btn btn-primary" onclick="window.print()">Imprimer le rapport PDF</button>
+      </div>
     </div>
   </main>
 
   <script>
-    /* LE SCRIPT DE CALCUL RESTE INTACT POUR NE PAS CASSER LA LOGIQUE */
+    /* LOGIQUE DE CALCUL */
     const TB=[[0.2,1,1,0.95,0.95,0.85,0.85],[0.5,0.97,0.97,0.92,0.92,0.81,0.81],[1,0.94,0.94,0.88,0.88,0.75,0.75],[2,0.91,0.91,0.84,0.84,0.65,0.65],[3,0.88,0.88,0.79,0.79,0.55,0.55],[4,0.84,0.84,0.72,0.72,0.45,0.45],[5,0.8,0.8,0.6,0.6,0.35,0.35],[6,0.75,0.75,0.5,0.5,0.27,0.27],[7,0.7,0.7,0.42,0.42,0.22,0.22],[8,0.6,0.6,0.35,0.35,0.18,0.18],[9,0.52,0.52,0.3,0.3,0,0.15],[10,0.45,0.45,0.26,0.26,0,0.13],[11,0.41,0.41,0,0.23,0,0],[12,0.37,0.37,0,0.21,0,0],[13,0,0.34,0,0,0,0],[14,0,0.31,0,0,0,0],[15,0,0.28,0,0,0,0],[999,0,0,0,0,0,0]];
     function getFF(f,d,v){if(f===null||d===null)return null;const vge=v>=30?1:0;let col;if(d<=1)col=1+vge;else if(d<=2)col=3+vge;else col=5+vge;for(let i=0;i<TB.length;i++){if(f<=TB[i][0])return TB[i][col];}return 0;}
     function getFI(p,v){if(!p)return null;if(p==='B')return 1;if(p==='A')return v>=75?1:0.95;if(p==='M')return 0.9;return null;}
@@ -131,7 +186,7 @@
       const p=g(pid),ve=g(vid);
       if(li===null||!isFinite(li)){p.style.borderColor='var(--border-color)';ve.textContent='En attente de données';ve.style.color='';return;}
       let col,txt;
-      if(li<=1){col='#1a7a3e';txt='Tâche acceptable';}else if(li<=3){col='#b84e10';txt='Risque de lombalgie';}else{col='#9b1c1c';txt='Intervention immédiate';}
+      if(li<=1){col='#1a7a3e';txt='✅ Tâche acceptable';}else if(li<=3){col='#b84e10';txt='⚠️ Risque de lombalgie';}else{col='#9b1c1c';txt='❌ Danger immédiat';}
       p.style.borderColor=col;ve.textContent=txt;ve.style.color=col;
     }
 
