@@ -4,491 +4,159 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Équation NIOSH — Arthur Le Boursicot</title>
-  <meta name="description" content="Outil interactif NIOSH pour l'évaluation du port de charges." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    .niosh-page{padding-top:6rem;padding-bottom:5rem}
-    .page-hero{padding:3rem 0;border-bottom:1px solid var(--border-light);margin-bottom:2.5rem}
-    .page-hero-inner{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap}
-    .page-tag{font-size:.68rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.8rem}
-    .page-title{font-family:var(--font-display);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--text-primary);margin-bottom:.6rem}
-    .page-sub{font-size:.88rem;color:var(--text-sec);max-width:480px;line-height:1.7}
-    .hero-scores{display:flex;gap:2rem;flex-shrink:0}
-    .hero-score-block{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-    .hero-score-label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted)}
-    .hero-score-sub{font-size:.7rem;color:var(--text-muted)}
-    .hero-score-num{font-family:var(--font-display);font-size:2.8rem;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--text-primary);transition:color .3s}
-    .nc{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--card-shadow);padding:1.75rem 2rem;margin-bottom:1rem}
-    .nct{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:.72rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.4rem;padding-bottom:1rem;border-bottom:1px solid var(--border-light)}
-    .nct::before{content:'';display:block;width:2px;height:14px;background:var(--text-primary);border-radius:2px;flex-shrink:0}
-    .g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-    .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
-    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
-    .f{display:flex;flex-direction:column;gap:5px}
-    .f label{font-size:.72rem;font-weight:400;letter-spacing:.02em;color:var(--text-muted)}
-    .f input,.f select{font-family:var(--font-body);font-size:.88rem;font-weight:300;padding:9px 13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-secondary);color:var(--text-primary);outline:none;transition:border-color .2s,background .2s;-webkit-appearance:none;width:100%}
-    .f input:focus,.f select:focus{border-color:var(--text-primary);background:var(--bg)}
-    .fc{font-family:var(--font-display);font-size:.9rem;font-weight:600;letter-spacing:-.02em;padding:9px 13px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius-sm);color:var(--text-primary);text-align:center}
-    .fh{font-size:.68rem;color:var(--text-muted);line-height:1.5}
-    .param-row{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:1rem;align-items:start;padding:14px 0;border-bottom:1px solid var(--border-light)}
-    .param-row:last-child{border-bottom:none}
-    .pl strong{display:block;font-size:.78rem;font-weight:600;color:var(--text-primary);margin-bottom:3px}
-    .pl span{font-size:.7rem;color:var(--text-muted);line-height:1.5}
-    .p2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-    .p3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-    .fb{font-family:var(--font-display);font-size:.82rem;font-weight:600;padding:8px 10px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius-sm);color:var(--text-primary);text-align:center;letter-spacing:-.01em}
-    .fl{font-size:.6rem;color:var(--text-muted);text-align:center;margin-top:2px}
-    .chip{background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:12px;text-align:center}
-    .chip-label{font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px}
-    .chip-val{font-family:var(--font-display);font-size:1.4rem;font-weight:700;letter-spacing:-.03em;color:var(--text-primary)}
-    .chip-sub{font-size:.6rem;color:var(--text-muted);margin-top:2px}
-    .rg{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
-    .rp{border-radius:var(--radius);padding:2rem 1.5rem;text-align:center;border:1px solid var(--border-light);background:var(--bg-secondary);transition:background .4s,border-color .4s}
-    .rp-tag{font-size:.65rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
-    .rp-li{font-family:var(--font-display);font-size:2.8rem;font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--text-primary);margin-bottom:4px;transition:color .4s}
-    .rp-unit{font-size:.75rem;color:var(--text-muted)}
-    .rp-verdict{margin-top:8px;font-size:.8rem;font-weight:300;color:var(--text-sec);transition:color .4s}
-    .ref-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:1rem}
-    .ref-table th{font-size:.64rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);text-align:left;padding:6px 12px;border-bottom:1px solid var(--border-light)}
-    .ref-table td{padding:8px 12px;border-bottom:1px solid var(--border-light);color:var(--text-sec);font-weight:300}
-    .ref-table tr:last-child td{border-bottom:none}
-    .zdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
-    .ib{display:flex;gap:10px;padding:10px 14px;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius-sm);font-size:.76rem;color:var(--text-sec);line-height:1.5;margin-bottom:1.2rem}
-    .formula-box{font-size:.7rem;color:var(--text-muted);font-family:monospace;background:var(--bg-secondary);border:1px solid var(--border-light);border-radius:var(--radius-sm);padding:10px 14px;margin-top:1rem;line-height:2}
-    .back-link{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;color:var(--text-muted);text-decoration:none;margin-bottom:1.5rem;transition:color .2s}
-    .back-link:hover{color:var(--text-primary)}
-    .print-btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-body);font-size:.82rem;font-weight:400;padding:9px 18px;border:1px solid var(--border);border-radius:980px;background:var(--bg);color:var(--text-sec);cursor:pointer;text-decoration:none;transition:background .2s,color .2s;margin-top:1rem}
-    .print-btn:hover{background:var(--bg-secondary);color:var(--text-primary)}
-    .col-head{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:6px 0;margin-bottom:6px;border-bottom:1px solid var(--border-light);text-align:center}
-    @media(max-width:760px){.param-row,.g3,.rg{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}.page-hero-inner{flex-direction:column;align-items:flex-start}.hero-scores{align-items:flex-start}.nc{padding:1.25rem}}
-    @media(max-width:480px){.g4{grid-template-columns:1fr}.hero-scores{flex-direction:column;gap:1rem}}
-    @media print{.header,.back-link,.print-btn{display:none!important}.nc{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid}body{background:white}}
+    .niosh-container { padding: 40px 0; }
+    .form-box { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .form-box h3 { border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; font-size: 1.2rem; }
+    
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    
+    .field { margin-bottom: 15px; }
+    .field label { display: block; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px; color: var(--text-gray); }
+    .field input, .field select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 1rem; }
+    .field input:focus { outline: none; border-color: var(--primary-blue); }
+    
+    .result-chip { background: var(--bg-light); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid var(--light-blue); }
+    .result-val { font-size: 1.8rem; font-weight: bold; color: var(--primary-blue); margin: 5px 0; }
+    
+    .verdict-box { padding: 20px; text-align: center; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 10px;}
+    .formula { background: var(--bg-light); padding: 15px; font-family: monospace; font-size: 0.85rem; margin-top: 20px; border-radius: 4px; }
+    
+    .ref-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+    .ref-table th, .ref-table td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
+    .ref-table th { background: var(--bg-light); color: var(--primary-blue); }
+    
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <header class="header" id="header">
+  <header class="header">
     <nav class="nav container">
-      <a href="index.html" class="nav-logo">ALB<span class="dot">.</span></a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Menu"><span></span><span></span></button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html#about" class="nav-link">Profil</a></li>
-        <li><a href="index.html#work" class="nav-link">Outils</a></li>
-        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
-      </ul>
+      <a href="index.html" class="nav-logo">ALB<span>.</span></a>
+      <a href="index.html" class="nav-link">← Retour</a>
     </nav>
   </header>
 
-  <main class="niosh-page">
-    <div class="container">
+  <main class="container niosh-container">
+    <div class="hero-badge">Outil ergonomique · Lombalgie</div>
+    <h1 class="hero-title" style="font-size: 2.5rem;">Équation de NIOSH</h1>
+    <p>Calcul de la Charge Maximale Admissible (CMA) et de l'Indice de Levée (LI).</p>
 
-      <a href="index.html" class="back-link">← Retour aux outils</a>
+    <div class="form-box mt-4">
+      <h3>Informations générales</h3>
+      <div class="grid-2">
+        <div class="field"><label>Tâche observée</label><input type="text" placeholder="Ex: port de sacs"></div>
+        <div class="field"><label>Genre</label><select><option>Homme</option><option>Femme</option></select></div>
+      </div>
+    </div>
 
-      <div class="page-hero">
-        <div class="page-hero-inner">
-          <div>
-            <p class="page-tag">Outil ergonomique · Port de charges · Lombalgie</p>
-            <h1 class="page-title">Équation de NIOSH</h1>
-            <p class="page-sub">Calcul de la Charge Maximale Admissible (CMA) et de l'Indice de Levée (LI) pour évaluer le risque de lombalgie lors de tâches de manutention manuelle.</p>
+    <div class="form-box">
+      <h3>Paramètres de levée (Origine & Destination)</h3>
+      <p style="font-size: 0.85rem; background: var(--bg-light); padding: 10px; border-radius: 4px;">Charge Constante FP est fixée à 23 kg. Remplissez les champs ci-dessous.</p>
+      
+      <div class="grid-2">
+        <div>
+          <h4 style="color:var(--primary-blue); margin: 15px 0;">Origine</h4>
+          <div class="field"><label>Charge manipulée CM (kg)</label><input type="number" id="cm_o" step="0.1" oninput="calc()"></div>
+          <div class="field"><label>Distance Horizontale H (cm)</label><input type="number" id="h_o" oninput="calc()"></div>
+          <div class="field"><label>Distance Verticale V (cm)</label><input type="number" id="v_o" oninput="calc()"></div>
+          <div class="field"><label>Angle Asymétrie A (°)</label><input type="number" id="a_o" oninput="calc()"></div>
+          <div class="field"><label>Fréquence F (lev./min)</label><input type="number" id="f_o" step="0.1" oninput="calc()"></div>
+          <div class="field"><label>Durée</label>
+            <select id="d_o" oninput="calc()"><option value="">—</option><option value="1">≤ 1 h</option><option value="2">> 1 h ≤ 2 h</option><option value="8">> 2 h ≤ 8 h</option></select>
           </div>
-          <div class="hero-scores">
-            <div class="hero-score-block">
-              <span class="hero-score-label">LI Origine</span>
-              <span class="hero-score-num" id="hero-li-o">—</span>
-              <span class="hero-score-sub">indice de levée</span>
-            </div>
-            <div class="hero-score-block">
-              <span class="hero-score-label">LI Destination</span>
-              <span class="hero-score-num" id="hero-li-d">—</span>
-              <span class="hero-score-sub">indice de levée</span>
-            </div>
+          <div class="field"><label>Qualité de Prise</label>
+            <select id="i_o" oninput="calc()"><option value="">—</option><option value="B">Bonne</option><option value="A">Acceptable</option><option value="M">Mauvaise</option></select>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="color:var(--primary-blue); margin: 15px 0;">Destination</h4>
+          <div class="field"><label>Charge manipulée CM (kg)</label><input type="number" id="cm_d" step="0.1" oninput="calc()"></div>
+          <div class="field"><label>Distance Horizontale H (cm)</label><input type="number" id="h_d" oninput="calc()"></div>
+          <div class="field"><label>Distance Verticale V (cm)</label><input type="number" id="v_d" oninput="calc()"></div>
+          <div class="field"><label>Angle Asymétrie A (°)</label><input type="number" id="a_d" oninput="calc()"></div>
+          <div class="field"><label>Fréquence F (lev./min)</label><input type="number" id="f_d" step="0.1" oninput="calc()"></div>
+          <div class="field"><label>Durée</label>
+            <select id="d_d" oninput="calc()"><option value="">—</option><option value="1">≤ 1 h</option><option value="2">> 1 h ≤ 2 h</option><option value="8">> 2 h ≤ 8 h</option></select>
+          </div>
+          <div class="field"><label>Qualité de Prise</label>
+            <select id="i_d" oninput="calc()"><option value="">—</option><option value="B">Bonne</option><option value="A">Acceptable</option><option value="M">Mauvaise</option></select>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- INFOS -->
-      <div class="nc">
-        <div class="nct">Informations générales</div>
-        <div class="g3" style="margin-bottom:.8rem">
-          <div class="f"><label>Date</label><input type="date" id="info_date"></div>
-          <div class="f"><label>Tâche observée</label><input type="text" id="info_tache" placeholder="Ex : port de sacs de pommes de terre"></div>
-          <div class="f"><label>Évaluateur</label><input type="text" id="info_eval" placeholder="Votre nom"></div>
-        </div>
-        <div class="g3">
-          <div class="f"><label>Entreprise</label><input type="text" id="info_ent" placeholder="Ex : Collège Jean Moulin"></div>
-          <div class="f"><label>Département / Service</label><input type="text" id="info_dept" placeholder="Ex : Restauration collective"></div>
-          <div class="f"><label>Genre de l'opérateur</label>
-            <select id="info_genre">
-              <option value="">— Sélectionner —</option>
-              <option value="H">Homme</option>
-              <option value="F">Femme</option>
-            </select>
-          </div>
-        </div>
+    <div class="form-box">
+      <h3>Résultats</h3>
+      <div class="grid-4">
+        <div class="result-chip">CMA Origine<div class="result-val" id="r_cma_o">—</div>kg</div>
+        <div class="result-chip">LI Origine<div class="result-val" id="r_li_o">—</div>Indice</div>
+        <div class="result-chip">CMA Dest.<div class="result-val" id="r_cma_d">—</div>kg</div>
+        <div class="result-chip">LI Dest.<div class="result-val" id="r_li_d">—</div>Indice</div>
       </div>
 
-      <!-- PARAMÈTRES -->
-      <div class="nc">
-        <div class="nct">Paramètres de levée</div>
-        <div class="ib"><span>ℹ</span><span>Renseigner les valeurs à l'<strong>Origine</strong> (prise de la charge) et à la <strong>Destination</strong> (dépose). La Charge Constante FP est fixée à 23 kg par NIOSH. Laisser à 0 si les valeurs sont identiques à l'origine.</span></div>
-
-        <!-- En-têtes -->
-        <div class="param-row" style="padding-top:0;padding-bottom:8px;border-bottom:2px solid var(--border)">
-          <div style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Paramètre</div>
-          <div class="col-head">Origine</div>
-          <div class="col-head">Destination</div>
-        </div>
-
-        <!-- Charge manipulée -->
-        <div class="param-row">
-          <div class="pl"><strong>Charge manipulée (CM)</strong><span>Poids réel de la charge soulevée en kg</span></div>
-          <div class="f"><label>CM (kg)</label><input type="number" id="cm_o" value="" min="0" step="0.1" oninput="calc()" placeholder="0"></div>
-          <div class="f"><label>CM (kg)</label><input type="number" id="cm_d" value="" min="0" step="0.1" oninput="calc()" placeholder="0"></div>
-        </div>
-
-        <!-- Charge constante -->
-        <div class="param-row">
-          <div class="pl"><strong>Charge Constante (FP)</strong><span>Valeur normative NIOSH — fixée à 23 kg</span></div>
-          <div><div class="fc">FP = 23 kg</div></div>
-          <div><div class="fc">FP = 23 kg</div></div>
-        </div>
-
-        <!-- Distance horizontale H -->
-        <div class="param-row">
-          <div class="pl"><strong>Distance Horizontale (H)</strong><span>Distance entre le milieu des chevilles et la projection des mains sur le sol lors de la prise (cm)</span></div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>H (cm)</label><input type="number" id="h_o" value="" min="0" step="1" oninput="calc()" placeholder="0"></div>
-              <div><div class="fb" id="fh_o">—</div><div class="fl">FH = 25/H</div></div>
-            </div>
-          </div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>H (cm)</label><input type="number" id="h_d" value="" min="0" step="1" oninput="calc()" placeholder="0"></div>
-              <div><div class="fb" id="fh_d">—</div><div class="fl">FH = 25/H</div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Distance verticale V -->
-        <div class="param-row">
-          <div class="pl"><strong>Distance Verticale (V)</strong><span>Hauteur des mains par rapport au sol lors de la prise de la charge (cm)</span></div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>V (cm)</label><input type="number" id="v_o" value="" min="0" step="1" oninput="calc()" placeholder="0"></div>
-              <div><div class="fb" id="fv_o">—</div><div class="fl">1−(0,003|V−75|)</div></div>
-            </div>
-          </div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>V (cm)</label><input type="number" id="v_d" value="" min="0" step="1" oninput="calc()" placeholder="0"></div>
-              <div><div class="fb" id="fv_d">—</div><div class="fl">1−(0,003|V−75|)</div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Déplacement vertical D -->
-        <div class="param-row">
-          <div class="pl"><strong>Déplacement Vertical (D)</strong><span>Calculé automatiquement à partir de V Origine et V Destination. Représente la distance verticale parcourue par la charge (cm)</span></div>
-          <div>
-            <div class="p2">
-              <div><div class="fb" id="d_calc">—</div><div class="fl">|V dest − V orig|</div></div>
-              <div><div class="fb" id="fd_o">—</div><div class="fl">0,82+(4,5/D)</div></div>
-            </div>
-          </div>
-          <div>
-            <div class="p2">
-              <div><div class="fb" id="d_calc2">—</div><div class="fl">même valeur</div></div>
-              <div><div class="fb" id="fd_d">—</div><div class="fl">0,82+(4,5/D)</div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Angle d'asymétrie A -->
-        <div class="param-row">
-          <div class="pl"><strong>Angle d'Asymétrie (A)</strong><span>Angle de rotation du tronc par rapport aux pieds lors du levage (°). 0° si pas de rotation.</span></div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>A (°)</label><input type="number" id="a_o" value="" min="0" max="135" step="1" oninput="calc()" placeholder="0"></div>
-              <div><div class="fb" id="fa_o">—</div><div class="fl">1−(0,0032×A)</div></div>
-            </div>
-          </div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>A (°)</label><input type="number" id="a_d" value="" min="0" max="135" step="1" oninput="calc()" placeholder="0"></div>
-              <div><div class="fb" id="fa_d">—</div><div class="fl">1−(0,0032×A)</div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Fréquence F -->
-        <div class="param-row">
-          <div class="pl"><strong>Fréquence de levée (F)</strong><span>Nombre de levées par minute et durée continue de manutention (d)</span></div>
-          <div>
-            <div class="p3" style="margin-bottom:0">
-              <div class="f"><label>F (lev./min)</label><input type="number" id="f_o" value="" min="0" step="0.1" oninput="calc()" placeholder="0"></div>
-              <div class="f"><label>Durée (d)</label>
-                <select id="d_o" oninput="calc()">
-                  <option value="">—</option>
-                  <option value="1">≤ 1 h</option>
-                  <option value="2">&gt; 1 h ≤ 2 h</option>
-                  <option value="8">&gt; 2 h ≤ 8 h</option>
-                </select>
-              </div>
-              <div><div class="fb" id="ff_o">—</div><div class="fl">Table B</div></div>
-            </div>
-          </div>
-          <div>
-            <div class="p3" style="margin-bottom:0">
-              <div class="f"><label>F (lev./min)</label><input type="number" id="f_d" value="" min="0" step="0.1" oninput="calc()" placeholder="0"></div>
-              <div class="f"><label>Durée (d)</label>
-                <select id="d_d" oninput="calc()">
-                  <option value="">—</option>
-                  <option value="1">≤ 1 h</option>
-                  <option value="2">&gt; 1 h ≤ 2 h</option>
-                  <option value="8">&gt; 2 h ≤ 8 h</option>
-                </select>
-              </div>
-              <div><div class="fb" id="ff_d">—</div><div class="fl">Table B</div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Prise I -->
-        <div class="param-row">
-          <div class="pl"><strong>Prise (I)</strong><span>Bonne : poignée intégrée ou prise sûre.<br>Acceptable : prise partielle sans poignée.<br>Mauvaise : prise difficile ou instable.</span></div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>Prise</label>
-                <select id="i_o" oninput="calc()">
-                  <option value="">—</option>
-                  <option value="B">Bonne</option>
-                  <option value="A">Acceptable</option>
-                  <option value="M">Mauvaise</option>
-                </select>
-              </div>
-              <div><div class="fb" id="fi_o">—</div><div class="fl">Table C</div></div>
-            </div>
-          </div>
-          <div>
-            <div class="p2">
-              <div class="f"><label>Prise</label>
-                <select id="i_d" oninput="calc()">
-                  <option value="">—</option>
-                  <option value="B">Bonne</option>
-                  <option value="A">Acceptable</option>
-                  <option value="M">Mauvaise</option>
-                </select>
-              </div>
-              <div><div class="fb" id="fi_d">—</div><div class="fl">Table C</div></div>
-            </div>
-          </div>
-        </div>
-
+      <div class="grid-2" style="margin-top: 15px;">
+        <div class="verdict-box" id="panel_o"><strong>Origine :</strong> <span id="verdict_o">En attente</span></div>
+        <div class="verdict-box" id="panel_d"><strong>Destination :</strong> <span id="verdict_d">En attente</span></div>
       </div>
 
-      <!-- RÉSULTATS -->
-      <div class="nc">
-        <div class="nct">Résultats</div>
+      <div class="formula" id="formula_box">En attente des données...</div>
 
-        <div class="g4" style="margin-bottom:1rem">
-          <div class="chip"><div class="chip-label">CMA Origine</div><div class="chip-val" id="r_cma_o">—</div><div class="chip-sub">kg admissibles</div></div>
-          <div class="chip"><div class="chip-label">LI Origine</div><div class="chip-val" id="r_li_o">—</div><div class="chip-sub">indice de levée</div></div>
-          <div class="chip"><div class="chip-label">CMA Destination</div><div class="chip-val" id="r_cma_d">—</div><div class="chip-sub">kg admissibles</div></div>
-          <div class="chip"><div class="chip-label">LI Destination</div><div class="chip-val" id="r_li_d">—</div><div class="chip-sub">indice de levée</div></div>
-        </div>
-
-        <div class="rg">
-          <div class="rp" id="panel_o">
-            <div class="rp-tag">Origine</div>
-            <div class="rp-li" id="res_li_o">—</div>
-            <div class="rp-unit">Indice de levée</div>
-            <div class="rp-verdict" id="verdict_o">En attente de données</div>
-          </div>
-          <div class="rp" id="panel_d">
-            <div class="rp-tag">Destination</div>
-            <div class="rp-li" id="res_li_d">—</div>
-            <div class="rp-unit">Indice de levée</div>
-            <div class="rp-verdict" id="verdict_d">En attente de données</div>
-          </div>
-        </div>
-
-        <div class="formula-box" id="formula_box">CMA = FP × FH × FV × FD × FA × FF × FI &nbsp;·&nbsp; LI = CM / CMA</div>
-
-        <p style="font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);margin:1.4rem 0 .8rem">Tableau de référence</p>
-        <table class="ref-table">
-          <thead><tr><th>Indice de levée (LI)</th><th>Interprétation</th><th>Action recommandée</th></tr></thead>
-          <tbody>
-            <tr><td><span class="zdot" style="background:#1a7a3e"></span>LI ≤ 1</td><td>Tâche acceptable</td><td>Aucune action requise</td></tr>
-            <tr><td><span class="zdot" style="background:#b84e10"></span>1 &lt; LI ≤ 3</td><td>Risque de lombalgie</td><td>Modification du poste à envisager</td></tr>
-            <tr><td><span class="zdot" style="background:#9b1c1c"></span>LI &gt; 3</td><td>Dépasse les capacités physiques</td><td>Intervention immédiate nécessaire</td></tr>
-          </tbody>
-        </table>
-
-        <button class="print-btn" onclick="window.print()">Imprimer / Exporter PDF</button>
-      </div>
-
+      <table class="ref-table">
+        <tr><th>LI</th><th>Interprétation</th></tr>
+        <tr><td>≤ 1</td><td>🟢 Tâche acceptable</td></tr>
+        <tr><td>1 < LI ≤ 3</td><td>🟠 Risque de lombalgie (modifier le poste)</td></tr>
+        <tr><td>> 3</td><td>🔴 Dépasse les capacités (intervention immédiate)</td></tr>
+      </table>
+      
+      <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.print()">Imprimer PDF</button>
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <span class="nav-logo">ALB<span class="dot">.</span></span>
-      <p class="footer-copy">© 2026 Arthur Le Boursicot — Rennes · Outils libres de droit</p>
-    </div>
-  </footer>
-
   <script>
-    /* Nav */
-    const header=document.getElementById('header');
-    window.addEventListener('scroll',()=>header.classList.toggle('scrolled',window.scrollY>40),{passive:true});
-    const toggle=document.getElementById('nav-toggle'),links=document.getElementById('nav-links');
-    toggle.addEventListener('click',()=>{const o=links.classList.toggle('open');toggle.classList.toggle('open',o)});
-    links.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',()=>{links.classList.remove('open');toggle.classList.remove('open')}));
-  </script>
-
-  <script>
-    /* Table B — FF */
-    const TB=[
-      [0.2, 1.00,1.00,0.95,0.95,0.85,0.85],
-      [0.5, 0.97,0.97,0.92,0.92,0.81,0.81],
-      [1,   0.94,0.94,0.88,0.88,0.75,0.75],
-      [2,   0.91,0.91,0.84,0.84,0.65,0.65],
-      [3,   0.88,0.88,0.79,0.79,0.55,0.55],
-      [4,   0.84,0.84,0.72,0.72,0.45,0.45],
-      [5,   0.80,0.80,0.60,0.60,0.35,0.35],
-      [6,   0.75,0.75,0.50,0.50,0.27,0.27],
-      [7,   0.70,0.70,0.42,0.42,0.22,0.22],
-      [8,   0.60,0.60,0.35,0.35,0.18,0.18],
-      [9,   0.52,0.52,0.30,0.30,0.00,0.15],
-      [10,  0.45,0.45,0.26,0.26,0.00,0.13],
-      [11,  0.41,0.41,0.00,0.23,0.00,0.00],
-      [12,  0.37,0.37,0.00,0.21,0.00,0.00],
-      [13,  0.00,0.34,0.00,0.00,0.00,0.00],
-      [14,  0.00,0.31,0.00,0.00,0.00,0.00],
-      [15,  0.00,0.28,0.00,0.00,0.00,0.00],
-      [999, 0.00,0.00,0.00,0.00,0.00,0.00],
-    ];
-
-    function getFF(f,d,v){
-      if(f===null||d===null)return null;
-      const vge=v>=30?1:0;
-      let col;
-      if(d<=1)col=1+vge;
-      else if(d<=2)col=3+vge;
-      else col=5+vge;
-      for(let i=0;i<TB.length;i++){if(f<=TB[i][0])return TB[i][col];}
-      return 0;
-    }
-
-    function getFI(p,v){
-      if(!p)return null;
-      if(p==='B')return 1.00;
-      if(p==='A')return v>=75?1.00:0.95;
-      if(p==='M')return 0.90;
-      return null;
-    }
-
+    /* LE SCRIPT DE CALCUL RESTE INTACT POUR NE PAS CASSER LA LOGIQUE */
+    const TB=[[0.2,1,1,0.95,0.95,0.85,0.85],[0.5,0.97,0.97,0.92,0.92,0.81,0.81],[1,0.94,0.94,0.88,0.88,0.75,0.75],[2,0.91,0.91,0.84,0.84,0.65,0.65],[3,0.88,0.88,0.79,0.79,0.55,0.55],[4,0.84,0.84,0.72,0.72,0.45,0.45],[5,0.8,0.8,0.6,0.6,0.35,0.35],[6,0.75,0.75,0.5,0.5,0.27,0.27],[7,0.7,0.7,0.42,0.42,0.22,0.22],[8,0.6,0.6,0.35,0.35,0.18,0.18],[9,0.52,0.52,0.3,0.3,0,0.15],[10,0.45,0.45,0.26,0.26,0,0.13],[11,0.41,0.41,0,0.23,0,0],[12,0.37,0.37,0,0.21,0,0],[13,0,0.34,0,0,0,0],[14,0,0.31,0,0,0,0],[15,0,0.28,0,0,0,0],[999,0,0,0,0,0,0]];
+    function getFF(f,d,v){if(f===null||d===null)return null;const vge=v>=30?1:0;let col;if(d<=1)col=1+vge;else if(d<=2)col=3+vge;else col=5+vge;for(let i=0;i<TB.length;i++){if(f<=TB[i][0])return TB[i][col];}return 0;}
+    function getFI(p,v){if(!p)return null;if(p==='B')return 1;if(p==='A')return v>=75?1:0.95;if(p==='M')return 0.9;return null;}
     function g(id){return document.getElementById(id);}
     function num(id){const v=parseFloat(g(id).value);return isNaN(v)?null:v;}
     function fmt(n,d=2){if(n===null||!isFinite(n))return '—';return n.toFixed(d).replace('.',',');}
-
-    function factors(s){
-      const h=num('h_'+s), v=num('v_'+s), a=num('a_'+s);
-      const f=num('f_'+s), d=g('d_'+s).value?parseFloat(g('d_'+s).value):null;
-      const i=g('i_'+s).value;
-      const fh=h!==null&&h>0?Math.min(1,25/h):null;
-      const fv=v!==null?Math.max(0,1-0.003*Math.abs(v-75)):null;
-      const fa=a!==null?Math.max(0,1-0.0032*a):null;
-      const ff=(f!==null&&d!==null)?getFF(f,d,v!==null?v:0):null;
-      const fi=i?getFI(i,v!==null?v:0):null;
-      return{h,v,a,f,d,fh,fv,fa,ff,fi};
-    }
-
-    function setPanel(pid,lid,vid,li){
-      const p=g(pid),le=g(lid),ve=g(vid);
-      if(li===null||!isFinite(li)){
-        p.style.background='var(--bg-secondary)';p.style.borderColor='var(--border-light)';
-        le.style.color='var(--text-primary)';ve.textContent='En attente de données';ve.style.color='';return;
-      }
-      let bg,col,txt;
-      if(li<=1){bg='#f0faf4';col='#1a7a3e';txt='Tâche de manutention acceptable.';}
-      else if(li<=3){bg='#fff7f0';col='#b84e10';txt='Risque de lombalgie — modification du poste à envisager.';}
-      else{bg='#fff5f5';col='#9b1c1c';txt='Dépasse les capacités physiques — intervention immédiate nécessaire.';}
-      p.style.background=bg;p.style.borderColor=col;
-      le.style.color=col;ve.textContent=txt;ve.style.color=col;
+    function factors(s){const h=num('h_'+s),v=num('v_'+s),a=num('a_'+s),f=num('f_'+s),d=g('d_'+s).value?parseFloat(g('d_'+s).value):null,i=g('i_'+s).value;const fh=h!==null&&h>0?Math.min(1,25/h):null,fv=v!==null?Math.max(0,1-0.003*Math.abs(v-75)):null,fa=a!==null?Math.max(0,1-0.0032*a):null,ff=(f!==null&&d!==null)?getFF(f,d,v!==null?v:0):null,fi=i?getFI(i,v!==null?v:0):null;return{h,v,a,f,d,fh,fv,fa,ff,fi};}
+    
+    function setPanel(pid,vid,li){
+      const p=g(pid),ve=g(vid);
+      if(li===null||!isFinite(li)){p.style.borderColor='var(--border-color)';ve.textContent='En attente de données';ve.style.color='';return;}
+      let col,txt;
+      if(li<=1){col='#1a7a3e';txt='Tâche acceptable';}else if(li<=3){col='#b84e10';txt='Risque de lombalgie';}else{col='#9b1c1c';txt='Intervention immédiate';}
+      p.style.borderColor=col;ve.textContent=txt;ve.style.color=col;
     }
 
     function calc(){
-      const fo=factors('o'), fd=factors('d');
-
-      /* D commun */
+      const fo=factors('o'),fd=factors('d');
       const D=(fo.v!==null&&fd.v!==null)?Math.abs(fd.v-fo.v):null;
       const fdv=D!==null?(D>0?Math.min(1,0.82+4.5/D):1):null;
+      const cm_o=num('cm_o');let cma_o=null,li_o=null;
+      if(fo.fh!==null&&fo.fv!==null&&fo.fa!==null&&fo.ff!==null&&fo.fi!==null&&fdv!==null){cma_o=23*fo.fh*fo.fv*fdv*fo.fa*fo.ff*fo.fi;if(cm_o!==null&&cm_o>0&&cma_o>0)li_o=cm_o/cma_o;}
+      const cm_d=num('cm_d');let cma_d=null,li_d=null;
+      if(fd.fh!==null&&fd.fv!==null&&fd.fa!==null&&fd.ff!==null&&fd.fi!==null&&fdv!==null){cma_d=23*fd.fh*fd.fv*fdv*fd.fa*fd.ff*fd.fi;if(cm_d!==null&&cm_d>0&&cma_d>0)li_d=cm_d/cma_d;}
 
-      /* Afficher facteurs O */
-      g('fh_o').textContent=fmt(fo.fh);g('fv_o').textContent=fmt(fo.fv);
-      g('fa_o').textContent=fmt(fo.fa);g('ff_o').textContent=fmt(fo.ff);
-      g('fi_o').textContent=fmt(fo.fi);g('fd_o').textContent=fmt(fdv);
-
-      /* Afficher facteurs D */
-      g('fh_d').textContent=fmt(fd.fh);g('fv_d').textContent=fmt(fd.fv);
-      g('fa_d').textContent=fmt(fd.fa);g('ff_d').textContent=fmt(fd.ff);
-      g('fi_d').textContent=fmt(fd.fi);g('fd_d').textContent=fmt(fdv);
-
-      /* D affiché */
-      const ds=D!==null?D.toFixed(0)+' cm':'—';
-      g('d_calc').textContent=ds;g('d_calc2').textContent=ds;
-
-      /* CMA / LI Origine */
-      const cm_o=num('cm_o');
-      let cma_o=null,li_o=null;
-      if(fo.fh!==null&&fo.fv!==null&&fo.fa!==null&&fo.ff!==null&&fo.fi!==null&&fdv!==null){
-        cma_o=23*fo.fh*fo.fv*fdv*fo.fa*fo.ff*fo.fi;
-        if(cm_o!==null&&cm_o>0&&cma_o>0)li_o=cm_o/cma_o;
-      }
-
-      /* CMA / LI Destination */
-      const cm_d=num('cm_d');
-      let cma_d=null,li_d=null;
-      if(fd.fh!==null&&fd.fv!==null&&fd.fa!==null&&fd.ff!==null&&fd.fi!==null&&fdv!==null){
-        cma_d=23*fd.fh*fd.fv*fdv*fd.fa*fd.ff*fd.fi;
-        if(cm_d!==null&&cm_d>0&&cma_d>0)li_d=cm_d/cma_d;
-      }
-
-      /* Chips */
-      g('r_cma_o').textContent=cma_o!==null?fmt(cma_o,1)+' kg':'—';
+      g('r_cma_o').textContent=cma_o!==null?fmt(cma_o,1):'—';
       g('r_li_o').textContent=li_o!==null?fmt(li_o,2):'—';
-      g('r_cma_d').textContent=cma_d!==null?fmt(cma_d,1)+' kg':'—';
+      g('r_cma_d').textContent=cma_d!==null?fmt(cma_d,1):'—';
       g('r_li_d').textContent=li_d!==null?fmt(li_d,2):'—';
 
-      /* Panels */
-      g('res_li_o').textContent=li_o!==null?fmt(li_o,2):'—';
-      g('res_li_d').textContent=li_d!==null?fmt(li_d,2):'—';
-      setPanel('panel_o','res_li_o','verdict_o',li_o);
-      setPanel('panel_d','res_li_d','verdict_d',li_d);
+      setPanel('panel_o','verdict_o',li_o);
+      setPanel('panel_d','verdict_d',li_d);
 
-      /* Hero */
-      g('hero-li-o').textContent=li_o!==null?fmt(li_o,2):'—';
-      g('hero-li-d').textContent=li_d!==null?fmt(li_d,2):'—';
-      if(li_o!==null){g('hero-li-o').style.color=li_o<=1?'#1a7a3e':li_o<=3?'#b84e10':'#9b1c1c';}
-      if(li_d!==null){g('hero-li-d').style.color=li_d<=1?'#1a7a3e':li_d<=3?'#b84e10':'#9b1c1c';}
-
-      /* Formule */
-      const str_o=cma_o!==null
-        ?'Origine : CMA = 23 × '+fmt(fo.fh)+' × '+fmt(fo.fv)+' × '+fmt(fdv)+' × '+fmt(fo.fa)+' × '+fmt(fo.ff)+' × '+fmt(fo.fi)+' = '+fmt(cma_o,2)+' kg  →  LI = '+(cm_o!==null?cm_o:'?')+' / '+fmt(cma_o,2)+' = '+fmt(li_o,2)
-        :'Origine : données incomplètes';
-      const str_d=cma_d!==null
-        ?'Destination : CMA = 23 × '+fmt(fd.fh)+' × '+fmt(fd.fv)+' × '+fmt(fdv)+' × '+fmt(fd.fa)+' × '+fmt(fd.ff)+' × '+fmt(fd.fi)+' = '+fmt(cma_d,2)+' kg  →  LI = '+(cm_d!==null?cm_d:'?')+' / '+fmt(cma_d,2)+' = '+fmt(li_d,2)
-        :'Destination : données incomplètes';
+      const str_o=cma_o!==null?'Origine: CMA = 23 × '+fmt(fo.fh)+' × '+fmt(fo.fv)+' × '+fmt(fdv)+' × '+fmt(fo.fa)+' × '+fmt(fo.ff)+' × '+fmt(fo.fi)+' = '+fmt(cma_o,2)+' kg':'Origine : données incomplètes';
+      const str_d=cma_d!==null?'Destination: CMA = 23 × '+fmt(fd.fh)+' × '+fmt(fd.fv)+' × '+fmt(fdv)+' × '+fmt(fd.fa)+' × '+fmt(fd.ff)+' × '+fmt(fd.fi)+' = '+fmt(cma_d,2)+' kg':'Destination : données incomplètes';
       g('formula_box').innerHTML=str_o+'<br>'+str_d;
     }
-
     calc();
   </script>
-
 </body>
 </html>
