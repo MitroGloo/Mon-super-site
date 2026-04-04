@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Méthode REBA — Arthur Le Boursicot</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .reba-container { padding: 40px 0; }
+    .form-box { background: #fff; border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 25px; }
+    .form-box h3 { border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; margin-bottom: 20px; font-size: 1.3rem; }
+    
+    .input-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .input-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border-color); color: var(--primary-blue); font-size: 0.9rem; }
+    .input-table td { padding: 15px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+    .input-table tr:hover { background-color: #fcfdfe; }
+    
+    .param-info { font-size: 0.85rem; font-weight: bold; color: var(--text-dark); display: block; margin-bottom: 5px; }
+    
+    .field select { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.95rem; margin-bottom: 10px; }
+    .field select:focus { border-color: var(--primary-blue); outline: none; box-shadow: 0 0 0 2px var(--light-blue); }
+    .field label { display: block; font-size: 0.85rem; color: var(--text-gray); margin-top: 5px; cursor: pointer; }
+    .field input[type="checkbox"] { margin-right: 8px; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .result-chip { background: var(--bg-light); padding: 20px; border-radius: 8px; text-align: center; border: 1px solid var(--light-blue); }
+    .result-val { font-size: 2.2rem; font-weight: bold; color: var(--primary-blue); margin: 5px 0; }
+    .verdict-box { padding: 20px; text-align: center; border-radius: 8px; border: 2px solid var(--border-color); margin-top: 15px; font-weight: bold; font-size: 1.1rem; }
+    
+    @media (max-width: 768px) {
+      .input-table, .input-table tr, .input-table td { display: block; width: 100%; }
+      .input-table td { border-bottom: 1px solid #eee; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">ALB<span>.</span></a>
+      <a href="index.html" class="nav-link">← Retour aux outils</a>
+    </nav>
+  </header>
+
+  <main class="container reba-container">
+    <h1 class="hero-title">Méthode REBA</h1>
+    <p>Évaluation rapide du corps entier pour analyser les contraintes posturales liées aux tâches statiques ou dynamiques.</p>
+
+    <div class="form-box">
+      <h3>Groupe A : Nuque, Tronc et Jambes</h3>
+      <table class="input-table">
+        <tbody>
+          <tr>
+            <td style="width: 50%;">
+              <span class="param-info">1. Position de la nuque</span>
+            </td>
+            <td class="field">
+              <select id="neck_pos" onchange="calc()">
+                <option value="1">Flexion 0° à 20°</option>
+                <option value="2">Flexion > 20° ou Extension</option>
+              </select>
+              <label><input type="checkbox" id="neck_twist" onchange="calc()"> Nuque en rotation ou inclinaison latérale (+1)</label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">2. Position du tronc</span>
+            </td>
+            <td class="field">
+              <select id="trunk_pos" onchange="calc()">
+                <option value="1">Droit (0°)</option>
+                <option value="2">Flexion 0° à 20° ou Extension 0° à 20°</option>
+                <option value="3">Flexion 20° à 60° ou Extension > 20°</option>
+                <option value="4">Flexion > 60°</option>
+              </select>
+              <label><input type="checkbox" id="trunk_twist" onchange="calc()"> Tronc en rotation ou inclinaison latérale (+1)</label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">3. Position des jambes</span>
+            </td>
+            <td class="field">
+              <select id="legs_pos" onchange="calc()">
+                <option value="1">Appui bipodal (sur les deux jambes)</option>
+                <option value="2">Appui monopodal (sur une jambe)</option>
+              </select>
+              <select id="legs_flex" onchange="calc()" style="margin-top: 10px;">
+                <option value="0">Pas de flexion des genoux</option>
+                <option value="1">Flexion des genoux entre 30° et 60° (+1)</option>
+                <option value="2">Flexion des genoux > 60° (+2)</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-box">
+      <h3>Groupe B : Épaule, Coude et Poignet (Côté le plus sollicité)</h3>
+      <table class="input-table">
+        <tbody>
+          <tr>
+            <td style="width: 50%;">
+              <span class="param-info">4. Position de l'épaule (Bras)</span>
+            </td>
+            <td class="field">
+              <select id="shoulder_pos" onchange="calc()">
+                <option value="1">Flexion/Extension 0° à 20°</option>
+                <option value="2">Flexion 20° à 45° ou Extension > 20°</option>
+                <option value="3">Flexion 45° à 90°</option>
+                <option value="4">Flexion > 90°</option>
+              </select>
+              <label><input type="checkbox" id="shoulder_raised" onchange="calc()"> L'épaule est levée (+1)</label>
+              <label><input type="checkbox" id="shoulder_abd" onchange="calc()"> Le bras est en abduction (+1)</label>
+              <label><input type="checkbox" id="shoulder_sup" onchange="calc()"> Le bras est soutenu ou la personne penchée (-1)</label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">5. Position du coude (Avant-bras)</span>
+            </td>
+            <td class="field">
+              <select id="elbow_pos" onchange="calc()">
+                <option value="1">Flexion entre 60° et 100°</option>
+                <option value="2">Flexion < 60° ou > 100°</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="param-info">6. Position du poignet</span>
+            </td>
+            <td class="field">
+              <select id="wrist_pos" onchange="calc()">
+                <option value="1">Flexion/Extension 0° à 15°</option>
+                <option value="2">Flexion/Extension > 15°</option>
+              </select>
+              <label><input type="checkbox" id="wrist_twist" onchange="calc()"> Déviation ulnaire/radiale ou torsion (+1)</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-box">
+      <h3>Effort, Prise et Activité</h3>
+      <table class="input-table">
+        <tbody>
+          <tr>
+            <td style="width: 50%;"><span class="param-info">Charge / Force appliquée</span></td>
+            <td class="field">
+              <select id="force" onchange="calc()">
+                <option value="0">Inférieure à 5 kg (0)</option>
+                <option value="1">Entre 5 kg et 10 kg (+1)</option>
+                <option value="2">Supérieure à 10 kg (+2)</option>
+              </select>
+              <label><input type="checkbox" id="force_shock" onchange="calc()"> Chocs ou changement de posture violent (+1)</label>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="param-info">Qualité de la prise en main</span></td>
+            <td class="field">
+              <select id="coupling" onchange="calc()">
+                <option value="0">Bonne (poignées adaptées) (0)</option>
+                <option value="1">Acceptable (+1)</option>
+                <option value="2">Difficile mais possible (+2)</option>
+                <option value="3">Inadéquate ou dangereuse (+3)</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><span class="param-info">Activité musculaire</span></td>
+            <td class="field">
+              <label><input type="checkbox" id="act_static" onchange="calc()"> Posture statique maintenue > 1 minute (+1)</label>
+              <label><input type="checkbox" id="act_rep" onchange="calc()"> Action répétée plus de 4 fois par minute (+1)</label>
+              <label><input type="checkbox" id="act_instable" onchange="calc()"> Changements rapides de posture / base instable (+1)</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-box">
+      <h3>Résultat REBA</h3>
+      
+      <div class="grid-3">
+        <div class="result-chip">Score Groupe A<div class="result-val" id="res_a">1</div></div>
+        <div class="result-chip">Score Groupe B<div class="result-val" id="res_b">1</div></div>
+        <div class="result-chip" style="background: var(--light-blue);">Score Final<div class="result-val" id="res_final">1</div></div>
+      </div>
+
+      <div class="verdict-box" id="verdict_box">
+        <span id="verdict_text">Négligeable</span>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <button class="btn btn-primary" onclick="window.print()">Imprimer le rapport PDF</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Matrices officielles REBA d'après le document [cite: 266, 237, 304, 264]
+    
+    // Table A: [Tronc 1-5][Nuque 1-3][Jambes 1-4] [cite: 304]
+    const tableA = [
+      [[1,2,3,4], [2,3,4,5], [3,4,5,6]],
+      [[2,3,4,5], [3,4,5,6], [4,5,6,7]],
+      [[2,4,5,6], [3,5,6,7], [4,6,7,8]],
+      [[3,5,6,7], [4,6,7,8], [5,7,8,9]],
+      [[4,6,7,8], [5,7,8,9], [6,8,9,9]]
+    ];
+
+    // Table B: [Epaule 1-6][Coude 1-2][Poignet 1-3] [cite: 237]
+    const tableB = [
+      [[1,2,2], [1,2,3]],
+      [[1,2,3], [2,3,4]],
+      [[3,4,5], [4,5,5]],
+      [[4,5,5], [5,6,7]],
+      [[5,6,7], [6,7,8]],
+      [[7,8,8], [8,9,9]]
+    ];
+
+    // Table C: [ScoreA 1-12][ScoreB 1-12] [cite: 266]
+    const tableC = [
+      [1,1,1,2,3,3,4,5,6,7,7,7],
+      [1,2,2,3,4,4,5,6,6,7,7,8],
+      [2,3,3,3,4,5,6,7,7,8,8,8],
+      [3,4,4,4,5,6,7,8,8,9,9,9],
+      [4,4,4,5,6,7,8,8,9,9,9,9],
+      [6,6,6,7,8,8,9,9,10,10,10,10],
+      [7,7,7,8,9,9,9,10,10,11,11,11],
+      [8,8,8,9,10,10,10,10,10,11,11,11],
+      [9,9,9,10,10,10,11,11,11,12,12,12],
+      [10,10,10,11,11,11,11,12,12,12,12,12],
+      [11,11,11,11,12,12,12,12,12,12,12,12],
+      [12,12,12,12,12,12,12,12,12,12,12,12]
+    ];
+
+    function calc() {
+      // 1. Calcul Groupe A (Nuque, Tronc, Jambes) [cite: 228]
+      let neck = parseInt(document.getElementById('neck_pos').value) + (document.getElementById('neck_twist').checked ? 1 : 0);
+      if(neck > 3) neck = 3; [cite: 304]
+
+      let trunk = parseInt(document.getElementById('trunk_pos').value) + (document.getElementById('trunk_twist').checked ? 1 : 0);
+      if(trunk > 5) trunk = 5; [cite: 304]
+
+      let legs = parseInt(document.getElementById('legs_pos').value) + parseInt(document.getElementById('legs_flex').value);
+      if(legs > 4) legs = 4; [cite: 304]
+
+      let scoreA = tableA[trunk-1][neck-1][legs-1]; [cite: 294]
+      let force = parseInt(document.getElementById('force').value) + (document.getElementById('force_shock').checked ? 1 : 0); [cite: 325, 328, 329]
+      let scoreA_adj = scoreA + force; [cite: 333]
+      if(scoreA_adj > 12) scoreA_adj = 12;
+
+      // 2. Calcul Groupe B (Epaule, Coude, Poignet) [cite: 236]
+      let shoulder = parseInt(document.getElementById('shoulder_pos').value) 
+                   + (document.getElementById('shoulder_raised').checked ? 1 : 0) [cite: 252]
+                   + (document.getElementById('shoulder_abd').checked ? 1 : 0) [cite: 253]
+                   - (document.getElementById('shoulder_sup').checked ? 1 : 0); [cite: 259]
+      if(shoulder < 1) shoulder = 1;
+      if(shoulder > 6) shoulder = 6; [cite: 237]
+
+      let elbow = parseInt(document.getElementById('elbow_pos').value);
+
+      let wrist = parseInt(document.getElementById('wrist_pos').value) + (document.getElementById('wrist_twist').checked ? 1 : 0); [cite: 292]
+      if(wrist > 3) wrist = 3; [cite: 237]
+
+      let scoreB = tableB[shoulder-1][elbow-1][wrist-1]; [cite: 301]
+      let coupling = parseInt(document.getElementById('coupling').value); [cite: 307]
+      let scoreB_adj = scoreB + coupling; [cite: 320]
+      if(scoreB_adj > 12) scoreB_adj = 12;
+
+      // 3. Score Final (Table C + Activité)
+      let scoreC = tableC[scoreA_adj-1][scoreB_adj-1]; [cite: 298]
+      let activity = (document.getElementById('act_static').checked ? 1 : 0) [cite: 311]
+                   + (document.getElementById('act_rep').checked ? 1 : 0) [cite: 315]
+                   + (document.getElementById('act_instable').checked ? 1 : 0); [cite: 316]
+                   
+      let finalScore = scoreC + activity; [cite: 331]
+      if(finalScore > 15) finalScore = 15;
+
+      // 4. Affichage
+      document.getElementById('res_a').textContent = scoreA_adj;
+      document.getElementById('res_b').textContent = scoreB_adj;
+      document.getElementById('res_final').textContent = finalScore;
+
+      // Interprétation du risque [cite: 340]
+      let vBox = document.getElementById('verdict_box');
+      let vText = document.getElementById('verdict_text');
+
+      if(finalScore === 1) {
+        vBox.style.borderColor = '#1a7a3e'; vBox.style.color = '#1a7a3e';
+        vText.innerHTML = "Risque négligeable<br><span style='font-size:0.9rem; font-weight:normal;'>Pas d'action nécessaire.</span>"; [cite: 341]
+      } else if(finalScore <= 3) {
+        vBox.style.borderColor = '#7a6c1a'; vBox.style.color = '#7a6c1a';
+        vText.innerHTML = "Risque faible<br><span style='font-size:0.9rem; font-weight:normal;'>Un changement peut être nécessaire.</span>"; [cite: 341]
+      } else if(finalScore <= 7) {
+        vBox.style.borderColor = '#b84e10'; vBox.style.color = '#b84e10';
+        vText.innerHTML = "Risque moyen<br><span style='font-size:0.9rem; font-weight:normal;'>Vigilance, des améliorations à envisager.</span>"; [cite: 342]
+      } else if(finalScore <= 10) {
+        vBox.style.borderColor = '#9b1c1c'; vBox.style.color = '#9b1c1c';
+        vText.innerHTML = "Risque élevé<br><span style='font-size:0.9rem; font-weight:normal;'>Des améliorations sont nécessaires.</span>"; [cite: 343]
+      } else {
+        vBox.style.borderColor = '#660000'; vBox.style.color = '#660000';
+        vText.innerHTML = "Risque très élevé<br><span style='font-size:0.9rem; font-weight:normal;'>Intervention immédiate exigée !</span>"; [cite: 344]
+      }
+    }
+
+    // Initialisation
+    calc();
+  </script>
+</body>
+</html>
