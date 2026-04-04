@@ -24,6 +24,7 @@ h1, h2, h3 { color: var(--primary-blue); margin-bottom: 15px; }
 .hero-title { font-size: 3rem; }
 .section-title { font-size: 2rem; margin-bottom: 20px; }
 p { color: var(--text-gray); margin-bottom: 15px; font-size: 1.1rem; }
+li { color: var(--text-blue); margin-bottom: 15px; font-size: 1.1rem; }
 
 /* Navigation */
 .header { position: sticky; top: 0; background: var(--bg-color); border-bottom: 1px solid var(--border-color); z-index: 100; }
