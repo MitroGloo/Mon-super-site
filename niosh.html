@@ -186,7 +186,7 @@
       const p=g(pid),ve=g(vid);
       if(li===null||!isFinite(li)){p.style.borderColor='var(--border-color)';ve.textContent='En attente de données';ve.style.color='';return;}
       let col,txt;
-      if(li<=1){col='#1a7a3e';txt='✅ Tâche acceptable';}else if(li<=3){col='#b84e10';txt='⚠️ Risque de lombalgie';}else{col='#9b1c1c';txt='❌ Danger immédiat';}
+      if(li<=1){col='#1a7a3e';txt='Tâche acceptable';}else if(li<=3){col='#b84e10';txt='Risque de lombalgie';}else{col='#9b1c1c';txt='Danger immédiat';}
       p.style.borderColor=col;ve.textContent=txt;ve.style.color=col;
     }
 
